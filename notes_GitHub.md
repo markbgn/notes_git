@@ -19,3 +19,6 @@ or
 
 ## Creating a branch
 `git checkout -b <branch-name>`
+
+## Pushing a branch
+`git push -u <remote> <branch-name>`

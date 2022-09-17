@@ -12,3 +12,4 @@
 or
 2. `git add [file]` adds a specific file to the commit
 3. `git commit -m "write comment here"`
+4. `git push -u origin master`

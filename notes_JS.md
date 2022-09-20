@@ -29,3 +29,12 @@ const jessica = new PersonCl('Jessica Davis', 1999);
 jessica.calcAge();
 PersonCl.hey();
 ```
+
+## Encapsulation in JavasCript (not yet official)
+Encapsulation is currently being developed in JavaScript is at stage 3/4.
+
+There are:
+- Public fields (instances): declared at the beginning of the class without a *const* or *let*
+- Private fields: marked with a **#**. Unreachable from outside of the class.
+- Public methods: general methods as we use them daily.
+- Private methods: marked with a **#**. Is not implemented yet.

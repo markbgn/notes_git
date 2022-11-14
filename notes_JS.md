@@ -132,12 +132,91 @@ In classical OOP objects (instances) are **instantiated** from classes which act
 
 ## Get & Set
 
+# Asynchronous and synchronous JavaScript, APIs
+
+## Synchronous
+
+- Most code is **synchronous**
+- Sync code is executed **line by line**
+- Each line of code **waits** for the previous to finish
+- Long running operations **block** code execution
+
+## Asynchronous
+
+- Async code is executed **after a task that runs in the "background" finishes**
+- Async code is **non-blocking**
+- Callback functions and EventListeners alone do **NOT** make code async
+
+## AJAX
+
+**A**synchronous **J**avaScript **A**nd **X**ML
+Allows us to communicate with remote web servers in an async way. With AJAX calls we can request data from web serververs dynamically.
+_Fun-fact: XML data format is no longer used for data transmitting on the web, JSON is used instead._
+
+## API
+
+**A**pplication **P**rogramming **I**nterface: Piece of software that can be used by another software in order to allow applications to talk to each other.
+
+### Online API
+
+Application running on a server, that receives requests for data, and sends data back as a response.
+
+### CORS
+
+**C**ross **O**rigin **R**esource **S**haring. Without it we cannot access a 3rd party API from our code.
+
+The modell of client and server communications through APIs is called the R**equest-response model** or **Client-server architecture**.
+
+## Promises
+
+A **promise** is an object that is used as a placeholder for the future result of an asynchronous operation.
+
+- With promises we no longer need to rely on events and callbacks passed into async functions to handle async results.
+- Instead of nesting callbacks, we can **chain promises** for a sequence of async operations - escaping _callback hell_.
+
+## The Event Loop
+
+Whenever the call stack is empty the event loop takes callbacks from the callback queue and puts them in the call stack so that they can be executed. The event loop is the essential piece that makes asynchronous behaviour possible in JS.
+
+### Callback queue
+
+A callback queue is an ordered list of callbacks waiting to be executed in/by the callstack.
+
+## [Microtasks](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)
+
+### Microtask queue
+
+A microfunction is a function that is executed AFTER its calling function has exited, but before any other task in the callback queue. Microtasks are kept in the microtask queue, which is similar to the callback queue, except it has priority over the callback queue. When running JS code top-level code is run before executing the tasks in the microtask queue.
+A microtask queue is where callbacks related to promises go. It has priority over the callback queue.
+
+> First, each time a task exits, the event loop checks to see if the task is returning control to other JavaScript code. If not, it runs all of the microtasks in the microtask queue. The microtask queue is, then, processed multiple times per iteration of the event loop, including after handling events and other callbacks.
+
+Second, if a microtask adds more microtasks to the queue by calling queueMicrotask(), those newly-added microtasks execute before the next task is run. That's because the event loop will keep calling microtasks until there are none left in the queue, even if more keep getting added.
+
+Example:
+
+```javascript
+console.log("Test start");
+setTimeout(() => console.log("0 sec timer"), 0);
+Promise.resolve("Resolved promise 1").then((res) => console.log(res));
+Promise.resolve("Resolved promise 2").then((res) => {
+  for (let i = 0; i > 100000000; i++) {}
+  console.log(res);
+});
+console.log("Test end");
+```
+
+If we run the example above, the order of execution as follows:
+First console.log()-s are executed, because they are top level-level codes. Then come the Promises, because their resolve tasks are queued in the microtask queue, which has priority over the callback queue. Last executed is the setTimeout().
+
+Microtasks are rarely interacted with by developers, yet there are some use-cases when timing of tasks that are executed together is critical.
+
 # Modern JavaScript Development
 
 ## Overview
 
 First we **develop** modules which go through a **build process**. First step of the build process is **bundling** all modules together. This process eliminates unused code and compresses our code as well. This is important because olderbrowsers do not support modules.
-Second step is **transpiling and polyfilling**, which means converting all modern JS syntax back to old ES5 syntax. It is usually done by _Babel_. Tools used for the build process: _webpack_ or _PARCEL_.
+Second step is **transpiling and polyfilling**, which means converting all modern JS syntax back to old ES5 syntax. It is usually done by _Babel_. Tools used for the build process: _webpack_ or _PARCEL_. They are called js bundles as well, because they take our code and transform it into a js bundle.
 
 ## Modules
 
@@ -153,16 +232,18 @@ Modules are favoured because:
 
 ### Difference between modules and scripts:
 
-|                     |       ES6 MODULE        |    SCRIPT     |
-| :-----------------: | :---------------------: | :-----------: |
-| Top-level variables |    Scoped to module     |    Global     |
-| :-----------------: |    :--------------:     |    :----:     |
-|    Default mode     |       Strict mode       | "Sloppy" mode |
-| :-----------------: |    :--------------:     |    :----:     |
-|  Top-level _this_   |        undefined        |    window     |
-| :-----------------: |    :--------------:     |    :----:     |
-| Imports and exports |           YES           |      NO       |
-| :-----------------: |    :--------------:     |    :----:     |
-|    HTML linking     | <script type ="module"> |   <script>    |
-| :-----------------: |    :--------------:     |    :----:     |
-|  File downloading   |          Async          |     Sync      |
+| | ES6 MODULE | SCRIPT |
+| Top-level variables | Scoped to module | Global |
+| Default mode | Strict mode | "Sloppy" mode |
+| Top-level _this_ | undefined | window |
+| Imports and exports | YES | NO |
+| HTML linking | <script type ="module"> | <script> |
+| File downloading | Async | Sync |
+
+Modules are **imported synchronously, while downloaded asynchronously!**
+
+Importing **erything** from a module into an object example:
+
+```javascript
+import * as ShoppingCart from "./shoppingCart.js";
+```

@@ -141,3 +141,70 @@ const dateChangedHandler = (event) => {
 ## Controlled components
 
 If a components logic is handled in the parent component, then it is called a **controlled component.**
+
+## Media query
+
+Media query is used in css for achieving different looks on different devices.
+
+Example:
+
+```javascript
+@media (min-width: 768px) {
+  width: auto;
+}
+```
+
+## Utilizing CSS modules
+
+[React Documentation](https://create-react-app.dev/docs/adding-a-css-modules-stylesheet/)
+
+### Setup:
+
+```javascript
+import styles from "./Button.module.css";
+```
+
+Rename the _.css_ file to _.module.css_
+
+## React Effects
+
+Responsible for rendering UI and reacting to user inputs, managing states and props, re-evaluate components upon state and props changes.
+
+### Side-Effects
+
+Anything else. Store data in browser storage, send Http requests to backend servers, set and manage timers.
+
+Handling side-effects with the **useEffect()** hook:
+
+```javascript
+useEffect(()=>{...},[dependencies]);
+```
+
+Executes the **side-effect function** aftr every component evaluation, if the **specified dependencies** changed.
+
+**useReducer()** can be used as a replacement for a _useState()_ if more powerful state management is needed.
+
+```javascript
+const [state, dispatchFn] = useReducer(reduceFn, initialState, initFn);
+```
+
+## Component-wide (behind the scenes) State Storage
+
+**Problem:** Certain components manage states. Other components may need those states, so data from component A hs to be passed to component B, sometimes through many other components which do not work with the passed states.
+
+**Solution:** We can create _"wrapper components"_ with the states that are needed in different parts of the application, and then we canwarp other components in them, granting the wrapped components and their children access to the created context.
+
+The component:
+
+```javascript
+const AuthContext = react.createContext({
+  isLoggedIn: false,
+});
+export default AuthContext;
+```
+
+and using it:
+
+```javascript
+<AuthContext.Provider>...</AuthContext.Provider>
+```

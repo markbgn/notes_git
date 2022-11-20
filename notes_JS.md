@@ -167,7 +167,7 @@ Application running on a server, that receives requests for data, and sends data
 
 The modell of client and server communications through APIs is called the R**equest-response model** or **Client-server architecture**.
 
-## Promises
+## [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 A **promise** is an object that is used as a placeholder for the future result of an asynchronous operation.
 
@@ -191,7 +191,7 @@ A microtask queue is where callbacks related to promises go. It has priority ove
 
 > First, each time a task exits, the event loop checks to see if the task is returning control to other JavaScript code. If not, it runs all of the microtasks in the microtask queue. The microtask queue is, then, processed multiple times per iteration of the event loop, including after handling events and other callbacks.
 
-Second, if a microtask adds more microtasks to the queue by calling queueMicrotask(), those newly-added microtasks execute before the next task is run. That's because the event loop will keep calling microtasks until there are none left in the queue, even if more keep getting added.
+> Second, if a microtask adds more microtasks to the queue by calling queueMicrotask(), those newly-added microtasks execute before the next task is run. That's because the event loop will keep calling microtasks until there are none left in the queue, even if more keep getting added.
 
 Example:
 
@@ -210,6 +210,46 @@ If we run the example above, the order of execution as follows:
 First console.log()-s are executed, because they are top level-level codes. Then come the Promises, because their resolve tasks are queued in the microtask queue, which has priority over the callback queue. Last executed is the setTimeout().
 
 Microtasks are rarely interacted with by developers, yet there are some use-cases when timing of tasks that are executed together is critical.
+
+## Promisifying
+
+Promisifying means converting callback based asynchronous behaviour into synchronous promises.
+
+## Creating promises
+
+The promise:
+
+```javascript
+const lotteryPromise = new Promise(function (resolve, reject) {
+  console.log("Lottery draw is happening!");
+
+  if (Math.random() >= 0.5) {
+    resolve("You win!");
+  } else {
+    reject("You lose!");
+  }
+});
+```
+
+_Resolve_ and _reject_ are used to mark the promise as either rejected or fulfilled.
+
+Consuming the promise:
+
+```javascript
+lotteryPromise
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err));
+```
+
+Consuming the promise with async/await:
+
+```javascript
+const whereAmI = async function (country) {
+  const res = await fetch(`https://restcountries.com/v2/name/${country}`);
+  console.log(res);
+};
+whereAmI("Hungary");
+```
 
 # Modern JavaScript Development
 
@@ -232,17 +272,18 @@ Modules are favoured because:
 
 ### Difference between modules and scripts:
 
-| | ES6 MODULE | SCRIPT |
-| Top-level variables | Scoped to module | Global |
-| Default mode | Strict mode | "Sloppy" mode |
-| Top-level _this_ | undefined | window |
-| Imports and exports | YES | NO |
-| HTML linking | <script type ="module"> | <script> |
-| File downloading | Async | Sync |
+|                     | ES6 MODULE              | SCRIPT        |
+| :------------------ | ----------------------- | ------------- |
+| Top-level variables | Scoped to module        | Global        |
+| Default mode        | Strict mode             | "Sloppy" mode |
+| Top-level _this_    | undefined               | window        |
+| Imports and exports | YES                     | NO            |
+| HTML linking        | <script type ="module"> | <script>      |
+| File downloading    | Async                   | Sync          |
 
 Modules are **imported synchronously, while downloaded asynchronously!**
 
-Importing **erything** from a module into an object example:
+Importing **everything** from a module into an object example:
 
 ```javascript
 import * as ShoppingCart from "./shoppingCart.js";
